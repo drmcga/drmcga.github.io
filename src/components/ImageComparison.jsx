@@ -40,7 +40,7 @@ function ImageComparison() {
 
   return (
     <>
-    <div>cavalo </div>
+    <div>cavalos</div>
       <div
         className="container"
         style={{ "--position": `${position}%` }}
