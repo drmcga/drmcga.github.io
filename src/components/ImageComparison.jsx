@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase"; // Importa o Firestore configurado
+import { FilterInfo } from "./filter-info/filter-info";
 
 function ImageComparison() {
   const [position, setPosition] = useState(50);
@@ -118,7 +119,7 @@ function ImageComparison() {
             <polyline
               points="48 160 16 128 48 96"
               fill="none"
-              stroke="currentColor"
+              stroke="currentColor" 
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="16"
@@ -176,21 +177,7 @@ function ImageComparison() {
       alignItems: "center", // Centraliza verticalmente
     }}
   >
-    {filter !== "none" && (
-      <>
-        <div>
-          <h2>Filtro: {filters.find((f) => f.cssValue === filter)?.name || "Nenhum"}</h2>
-          <p dangerouslySetInnerHTML={{ __html: description }}></p>
-        </div>
-        {filters.find((f) => f.cssValue === filter)?.example_image && (
-          <img
-            src={filters.find((f) => f.cssValue === filter).example_image}
-            alt={`Exemplo do filtro ${filters.find((f) => f.cssValue === filter)?.name}`}
-            style={{ maxWidth: "80%", borderRadius: "8px", minWidth: "400px" }}
-          />
-        )}
-      </>
-    )}
+  <FilterInfo filters={filters} filter={filter} description={description}/>
   </div>
 
     </>
