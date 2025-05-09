@@ -18,6 +18,22 @@ iframe {
 img {
   display: block;
   max-width: 100%;
+ 
+}
+
+code{
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #f4f4f4;
+  padding: 0.2rem;
+  border-radius: 0.2rem;
+}
+
+/* App.css */
+
+
+nav div:hover {
+  background-color: #063567;
+  color: white;
 }
 
 main {

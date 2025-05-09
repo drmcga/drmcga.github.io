@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase"; // Importa o Firestore configurado
 import { FilterInfo } from "./filter-info/filter-info";
+import  { ResetButton}   from "./buttons/ResetButton";
 
 function ImageComparison() {
   const [position, setPosition] = useState(50);
@@ -13,9 +14,10 @@ function ImageComparison() {
   );
   const [filter, setFilter] = useState("none");
 
-  // Novos estados
   const [filters, setFilters] = useState([]); // Armazena os filtros do Firestore
   const [description, setDescription] = useState(""); // Descrição do filtro selecionado
+
+  const canvasRef = useRef(null); // Referência para o canvas
 
   // Função para buscar os filtros do Firestore
   useEffect(() => {
@@ -51,15 +53,39 @@ function ImageComparison() {
 
   const handleFilterChange = (e) => {
     const filterName = e.target.value;
-    setFilter(filterName);
 
+    // Atualiza o estado do filtro
     const selectedFilter = filters.find((f) => f.name === filterName);
-    setDescription(selectedFilter ? selectedFilter.description : "");
-
-    // Atualiza o valor do filtro CSS
     setFilter(selectedFilter ? selectedFilter.cssValue : "none");
+
+    // Atualiza a descrição
+    setDescription(selectedFilter ? selectedFilter.description : "");
   };
 
+  const handleDownload = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    // Cria uma nova imagem para desenhar no canvas
+    const image = new Image();
+    image.src = beforeImage;
+
+    image.onload = () => {
+      // Define o tamanho do canvas
+      canvas.width = image.width;
+      canvas.height = image.height;
+
+      // Aplica o filtro e desenha a imagem no canvas
+      ctx.filter = filter;
+      ctx.drawImage(image, 0, 0, image.width, image.height);
+
+      // Converte o canvas para uma URL de download
+      const link = document.createElement("a");
+      link.download = "imagem-com-filtro.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    };
+  };
   return (
     <>
       <div className="container" style={{ "--position": `${position}%` }}>
@@ -156,7 +182,6 @@ function ImageComparison() {
       <div style={{ marginTop: "1rem" }}>
         <label>Escolher filtro: </label>
         <select value={filter} onChange={handleFilterChange}>
-          <option value="none">Nenhum</option>
           {filters.map((filter) => (
             <option key={filter.id} value={filter.name}>
               {filter.name}
@@ -164,6 +189,22 @@ function ImageComparison() {
           ))}
         </select>
       </div>
+
+
+<div style={{ marginTop: "2rem", display: "flex", gap: "1rem" }}>
+  <button onClick={handleDownload} disabled={!beforeImage.startsWith("data:image/")}>
+    Baixar Imagem com Filtro
+  </button>
+  <ResetButton
+    setBeforeImage={setBeforeImage}
+    setAfterImage={setAfterImage}
+    setFilter={setFilter}
+    setPosition={setPosition}
+  />
+</div>
+
+      {/* Canvas oculto para processar a imagem */}
+      <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
 
       <div
     style={{
@@ -177,6 +218,8 @@ function ImageComparison() {
       alignItems: "center", // Centraliza verticalmente
     }}
   >
+
+    
   <FilterInfo filters={filters} filter={filter} description={description}/>
   </div>
 

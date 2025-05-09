@@ -5,7 +5,7 @@ export const FilterInfo = ({filters, filter, description}) => {
 
   return <>
     <div>
-      <h2>Filtro: {filters.find((f) => f.cssValue === filter)?.name || "Nenhum"}</h2>
+      <h2>Filtro: {filters.find((f) => f.cssValue === filter)?.name}</h2>
       <p dangerouslySetInnerHTML={{ __html: description }}></p>
     </div>
     {filters.find((f) => f.cssValue === filter)?.example_image && (
