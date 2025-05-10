@@ -3,6 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase"; // Importa o Firestore configurado
 import { FilterInfo } from "./filter-info/filter-info";
 import  { ResetButton}   from "./buttons/ResetButton";
+import ImageFrame from "./ImageFrame";
 
 function ImageComparison() {
   const [position, setPosition] = useState(50);
@@ -88,89 +89,13 @@ function ImageComparison() {
   };
   return (
     <>
-      <div className="container" style={{ "--position": `${position}%` }}>
-        <div className="image-container">
-          <img
-            className="image-before slider-image"
-            src={beforeImage}
-            alt="before"
-            style={{ filter }}
-          />
-          <img
-            className="image-after slider-image"
-            src={afterImage}
-            alt="after"
-          />
-        </div>
-
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={position}
-          onChange={handleSliderChange}
-          aria-label="Percentage of before photo shown"
-          className="slider"
-        />
-        <div className="slider-line" aria-hidden="true"></div>
-        <div className="slider-button" aria-hidden="true">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            fill="currentColor"
-            viewBox="0 0 256 256"
-          >
-            <rect width="256" height="256" fill="none"></rect>
-            <line
-              x1="128"
-              y1="40"
-              x2="128"
-              y2="216"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="16"
-            ></line>
-            <line
-              x1="96"
-              y1="128"
-              x2="16"
-              y2="128"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="16"
-            ></line>
-            <polyline
-              points="48 160 16 128 48 96"
-              fill="none"
-              stroke="currentColor" 
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="16"
-            ></polyline>
-            <line
-              x1="160"
-              y1="128"
-              x2="240"
-              y2="128"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="16"
-            ></line>
-            <polyline
-              points="208 96 240 128 208 160"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="16"
-            ></polyline>
-          </svg>
-        </div>
-      </div>
+    <ImageFrame
+  beforeImage={beforeImage}
+  afterImage={afterImage}
+  filter={filter}
+  position={position}
+  handleSliderChange={handleSliderChange}
+/>
 
       <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
         <div>
@@ -191,17 +116,17 @@ function ImageComparison() {
       </div>
 
 
-<div style={{ marginTop: "2rem", display: "flex", gap: "1rem" }}>
-  <button onClick={handleDownload} disabled={!beforeImage.startsWith("data:image/")}>
-    Baixar Imagem com Filtro
-  </button>
-  <ResetButton
-    setBeforeImage={setBeforeImage}
-    setAfterImage={setAfterImage}
-    setFilter={setFilter}
-    setPosition={setPosition}
-  />
-</div>
+      <div style={{ marginTop: "2rem", display: "flex", gap: "1rem" }}>
+        <button onClick={handleDownload} disabled={!beforeImage.startsWith("data:image/")}>
+          Baixar Imagem com Filtro
+        </button>
+        <ResetButton
+          setBeforeImage={setBeforeImage}
+          setAfterImage={setAfterImage}
+          setFilter={setFilter}
+          setPosition={setPosition}
+        />
+      </div>
 
       {/* Canvas oculto para processar a imagem */}
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>

@@ -3,10 +3,10 @@ import "./App.css";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ImageComparison from "./components/ImageComparison";
-import AdminPage from "./components/AdminPage";
-import LoginPage from "./components/LoginPage";
-import Sobre from "./components/Sobre";
-import ComoUsar from "./components/Comousar";
+import AdminPage from "./components/pages/AdminPage";
+import LoginPage from "./components/pages/LoginPage";
+import Sobre from "./components/pages/Sobre";
+import ComoUsar from "./components/pages/Comousar";
 
 
 import Navbar from "./components/navbar";

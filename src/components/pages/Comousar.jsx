@@ -15,6 +15,10 @@ function ComoUsar() {
         <li>Faça upload de uma imagem clicando no botão "Inserir uma imagem".</li>
         <li>Use o controle deslizante para ajustar a visualização entre a imagem original e a imagem com filtros aplicados.</li>
         <li>Escolha um filtro no menu suspenso para aplicar efeitos visuais à imagem.</li>
+        <li>Visualize as diefereças com o slider, entenda o que mudou de forma interativa.</li>
+        <li>(Opcional) Faça o download da imagem transformada para a sua máquina!.</li>
+
+
       </ul>
       <h2>2. Acesso Administrativo</h2>
       <p>
