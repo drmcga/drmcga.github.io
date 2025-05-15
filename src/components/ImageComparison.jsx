@@ -7,14 +7,17 @@ import ImageFrame from "./ImageFrame";
 
 function ImageComparison() {
   const [position, setPosition] = useState(50);
+
+  
   const [beforeImage, setBeforeImage] = useState(
     "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1470&q=80"
   );
   const [afterImage, setAfterImage] = useState(
     "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1470&q=80"
   );
-  const [filter, setFilter] = useState("none");
 
+
+  const [filter, setFilter] = useState("none"); // Filtro CSS aplicado à imagem
   const [filters, setFilters] = useState([]); // Armazena os filtros do Firestore
   const [description, setDescription] = useState(""); // Descrição do filtro selecionado
 
@@ -52,6 +55,8 @@ function ImageComparison() {
     }
   };
 
+  // Função para lidar com a mudança de filtro
+  // Atualiza o estado do filtro e a descrição correspondente
   const handleFilterChange = (e) => {
     const filterName = e.target.value;
 
@@ -63,6 +68,9 @@ function ImageComparison() {
     setDescription(selectedFilter ? selectedFilter.description : "");
   };
 
+  // Função para baixar a imagem com o filtro aplicado
+  // Cria um canvas, aplica o filtro e gera um link de download
+  // O canvas é usado para processar a imagem antes de baixá-la
   const handleDownload = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
