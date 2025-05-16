@@ -1,29 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase"; // Importa o Firestore configurado
-import { FilterInfo } from "./filter-info/filter-info";
-import  { ResetButton}   from "./buttons/ResetButton";
+import { ResetButton } from "./buttons/ResetButton";
 import ImageFrame from "./ImageFrame";
+import { FilterDetails } from "./filter-info/FilterDetails";
 
 function ImageComparison() {
   const [position, setPosition] = useState(50);
-
-  
   const [beforeImage, setBeforeImage] = useState(
     "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1470&q=80"
   );
   const [afterImage, setAfterImage] = useState(
     "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1470&q=80"
   );
+  const [filter, setFilter] = useState("none");
+  const [filters, setFilters] = useState([]);
+  const [description, setDescription] = useState("");
 
+  const canvasRef = useRef(null);
 
-  const [filter, setFilter] = useState("none"); // Filtro CSS aplicado à imagem
-  const [filters, setFilters] = useState([]); // Armazena os filtros do Firestore
-  const [description, setDescription] = useState(""); // Descrição do filtro selecionado
-
-  const canvasRef = useRef(null); // Referência para o canvas
-
-  // Função para buscar os filtros do Firestore
   useEffect(() => {
     const fetchFilters = async () => {
       const filtersCollection = collection(db, "filters");
@@ -49,61 +44,53 @@ function ImageComparison() {
       reader.onloadend = () => {
         const uploadedImage = reader.result;
         setBeforeImage(uploadedImage);
-        setAfterImage(uploadedImage); // Atualiza o lado direito também
+        setAfterImage(uploadedImage);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Função para lidar com a mudança de filtro
-  // Atualiza o estado do filtro e a descrição correspondente
   const handleFilterChange = (e) => {
     const filterName = e.target.value;
-
-    // Atualiza o estado do filtro
     const selectedFilter = filters.find((f) => f.name === filterName);
     setFilter(selectedFilter ? selectedFilter.cssValue : "none");
-
-    // Atualiza a descrição
-    setDescription(selectedFilter ? selectedFilter.description : "");
+    setDescription(
+      selectedFilter
+        ? selectedFilter.description
+        : "Nenhuma descrição disponível."
+    );
   };
 
-  // Função para baixar a imagem com o filtro aplicado
-  // Cria um canvas, aplica o filtro e gera um link de download
-  // O canvas é usado para processar a imagem antes de baixá-la
   const handleDownload = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    // Cria uma nova imagem para desenhar no canvas
     const image = new Image();
     image.src = beforeImage;
 
     image.onload = () => {
-      // Define o tamanho do canvas
       canvas.width = image.width;
       canvas.height = image.height;
 
-      // Aplica o filtro e desenha a imagem no canvas
       ctx.filter = filter;
       ctx.drawImage(image, 0, 0, image.width, image.height);
 
-      // Converte o canvas para uma URL de download
       const link = document.createElement("a");
       link.download = "imagem-com-filtro.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
     };
   };
+
   return (
     <>
-    <ImageFrame
-  beforeImage={beforeImage}
-  afterImage={afterImage}
-  filter={filter}
-  position={position}
-  handleSliderChange={handleSliderChange}
-/>
+      <ImageFrame
+        beforeImage={beforeImage}
+        afterImage={afterImage}
+        filter={filter}
+        position={position}
+        handleSliderChange={handleSliderChange}
+      />
 
       <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
         <div>
@@ -123,7 +110,6 @@ function ImageComparison() {
         </select>
       </div>
 
-
       <div style={{ marginTop: "2rem", display: "flex", gap: "1rem" }}>
         <button onClick={handleDownload} disabled={!beforeImage.startsWith("data:image/")}>
           Baixar Imagem com Filtro
@@ -136,26 +122,9 @@ function ImageComparison() {
         />
       </div>
 
-      {/* Canvas oculto para processar a imagem */}
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
 
-      <div
-    style={{
-      marginTop: "2rem",
-      padding: "1rem",
-      border: "1px solid #ccc",
-      borderRadius: "8px",
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr", // Duas colunas: 50% cada
-      gap: "1rem", // Espaço entre os elementos
-      alignItems: "center", // Centraliza verticalmente
-    }}
-  >
-
-    
-  <FilterInfo filters={filters} filter={filter} description={description}/>
-  </div>
-
+      <FilterDetails filters={filters} filter={filter} description={description} />
     </>
   );
 }
