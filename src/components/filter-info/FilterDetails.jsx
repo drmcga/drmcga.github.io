@@ -1,7 +1,7 @@
 import React from "react";
 
-export const FilterDetails = ({ filters, filter, description }) => {
-  if (filter === "none") return <></>; // Não exibe nada se nenhum filtro estiver selecionado
+export const FilterDetails = ({ filters, filter, description, exampleImage }) => {
+    if (filter === "none") return <></>; // Não exibe nada se nenhum filtro estiver selecionado
 
   const selectedFilter = filters.find((f) => f.cssValue === filter);
 
@@ -31,10 +31,10 @@ export const FilterDetails = ({ filters, filter, description }) => {
           />
         </div>
       </div>
-    {filters.find((f) => f.cssValue === filter)?.example_image && (
+    {exampleImage && (
       <img
-        src={filters.find((f) => f.cssValue === filter).example_image}
-        alt={`Exemplo do filtro ${filters.find((f) => f.cssValue === filter)?.name}`}
+        src={exampleImage}
+        alt={`Exemplo do filtro ${selectedFilter?.name}`}
         style={{ maxWidth: "80%", borderRadius: "8px", minWidth: "400px" }}
       />
     )}

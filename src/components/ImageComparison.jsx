@@ -6,6 +6,9 @@ import ImageFrame from "./ImageFrame";
 import { FilterDetails } from "./filter-info/FilterDetails";
 import { ImageDropzone } from "./buttons/ImageDropzone";
 
+import { handleFilterChangeHelper, handleIntensityChangeHelper } from "./filter-info/filterUtils";
+
+
 
 function ImageComparison() {
   const [position, setPosition] = useState(50);
@@ -17,9 +20,21 @@ function ImageComparison() {
   );
   const [filter, setFilter] = useState("none");
   const [filters, setFilters] = useState([]);
+  const [intensity, setIntensity] = useState(100);
+  
   const [description, setDescription] = useState("");
 
   const [selectedFilterName, setSelectedFilterName] = useState("none");
+
+  const selectedFilter = filters.find(f => f.name === selectedFilterName);
+
+const [exampleImage, setExampleImage] = useState(null);
+
+  const min = selectedFilter?.min ?? 0;
+  const max = selectedFilter?.max ?? 100;
+  const step = selectedFilter?.step ?? 1;
+  const unit = selectedFilter?.unit ?? "%";
+
 
   const canvasRef = useRef(null);
 
@@ -42,20 +57,28 @@ function ImageComparison() {
     setPosition(e.target.value);
   };
 
+  const handleIntensityChange = (e) => {
+  handleIntensityChangeHelper(
+    Number(e.target.value),
+    selectedFilterName,
+    filters,
+    setFilter,
+    setIntensity
+  );
+};
 
 
   const handleFilterChange = (e) => {
-  const filterName = e.target.value;
-  setSelectedFilterName(filterName);
+  handleFilterChangeHelper(
+    e.target.value,
+    filters,
+    setSelectedFilterName,
+    setFilter,
+    setDescription,
+    setIntensity,
+    setExampleImage // <-- adicione aqui!
 
-  if (filterName === "none") {
-    setFilter("none");
-    setDescription("Nenhuma descrição disponível.");
-  } else {
-    const selectedFilter = filters.find((f) => f.name === filterName);
-    setFilter(selectedFilter ? selectedFilter.cssValue : "none");
-    setDescription(selectedFilter ? selectedFilter.description : "Nenhuma descrição disponível.");
-  }
+  );
 };
 
   const handleDownload = () => {
@@ -108,13 +131,29 @@ return (
           <div>
             <label>Escolher filtro: </label>
             <select value={selectedFilterName} onChange={handleFilterChange}>
-              <option value="none">Nenhum</option>
-              {filters.map((filter) => (
-                <option key={filter.id} value={filter.name}>
-                  {filter.name}
-                </option>
-              ))}
-            </select>
+            <option value="none">Nenhum</option>
+            {filters.map((filter) => (
+              <option key={filter.id} value={filter.name}>
+                {filter.name}
+              </option>
+            ))}
+          </select>
+          {selectedFilterName !== "none" && selectedFilter && (
+            <div>
+              <label>
+                Intensidade: {intensity}{unit}
+                <input
+                  type="range"
+                  min={min}
+                  max={max}
+                  step={step}
+                  value={intensity}
+                  onChange={handleIntensityChange}
+                  style={{ width: "100%" }}
+                />
+              </label>
+            </div>
+          )}
           </div>
           <div style={{ display: "flex", gap: "1rem" }}>
             <button onClick={handleDownload} disabled={!beforeImage.startsWith("data:image/")}>
@@ -130,10 +169,17 @@ return (
         </div>
         <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
       </div>
+
     </div>
     {/* Agora o FilterDetails fica embaixo dos dois blocos */}
-    <FilterDetails filters={filters} filter={filter} description={description} />
-  </>
+    <FilterDetails
+  filters={filters}
+  filter={filter}
+  description={description}
+  exampleImage={exampleImage}
+/>
+
+    </>
 );
 }
 
