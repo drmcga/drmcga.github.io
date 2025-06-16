@@ -31,10 +31,7 @@ code{
 /* App.css */
 
 
-nav div:hover {
-  background-color: #063567;
-  color: white;
-}
+
 
 main {
   display: grid;

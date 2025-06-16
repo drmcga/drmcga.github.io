@@ -1,6 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { UserMenu } from "./buttons/UserMenu";
+
+
+const navItems = [
+  { label: "Home", path: "/" },
+  { label: "Sobre", path: "/sobre" },
+  { label: "Como usar", path: "/comousar" }
+];
+
+function NavItem({ label, path }) {
+  return (
+    <NavLink
+      to={path}
+      style={({ isActive }) => ({
+        color: isActive ? "#ffd700" : "white",
+        textDecoration: "none",
+        fontWeight: "bold",
+        padding: "0.5rem 1rem",
+        borderRadius: "6px",
+        background: isActive ? "#0056b3" : "transparent",
+        transition: "background 0.2s, color 0.2s"
+      })}
+      onMouseEnter={e => e.target.style.background = "#3399ff"}
+      onMouseLeave={e => e.target.style.background = ""}
+    >
+      {label}
+    </NavLink>
+  );
+}
 
 function Navbar() {
   const [user, setUser] = useState(null);
@@ -26,51 +55,29 @@ function Navbar() {
   };
 
   return (
-    <nav style={{   alignSelf: "top",
-                    width:"100%", 
-                    padding: "1rem", 
-                    backgroundColor: "#007bff", 
-                    color: "white", 
-                    display: "flex", 
-                    justifyContent: "space-between", 
-                    alignItems: "center",
-                    marginBottom: "1rem" }}>
+    <nav style={{
+      alignSelf: "top",
+      width: "100%",
+      padding: ".5rem",
+      backgroundColor: "#0056b3",
+      color: "white",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: "1rem"
+    }}>
+      <img src="https://www.svgrepo.com/show/340223/drag-vertical.svg" alt="" style={{ maxWidth: "2rem", rotate: "90deg", filter: "invert(100%)" }} />
 
-        <img src="https://www.svgrepo.com/show/340223/drag-vertical.svg" alt="" style={{maxWidth:"2rem",rotate:"90deg", filter:"invert(100%)"}} />
-  
+      
 
-      <div>
-        <Link to="/" style={{ color: "white", textDecoration: "none", fontWeight: "bold" }}>
-          Home
-        </Link>
-      </div>
+      <div style={{ display: "flex", gap: "8rem" }}>
+      {navItems.map((item) => (
+        <NavItem key={item.path} label={item.label} path={item.path} />
+      ))}
+    </div>
+    <UserMenu user={user} onLogout={handleLogout} />
 
-      <div>
-        <Link to="/sobre" style={{ color: "white", textDecoration: "none", fontWeight: "bold" }}>
-          Sobre
-        </Link>
-      </div>
-
-      <div>
-        <Link to="/comousar" style={{ color: "white", textDecoration: "none", fontWeight: "bold" }}>
-          Como usar
-        </Link>
-      </div>
-
-      <div>
-        {user ? (
-          <>
-            <span style={{ marginRight: "1rem" }}>LOGADO COMO: {user.email}</span>
-            <button onClick={handleLogout} style={{ backgroundColor: "white", color: "#007bff", border: "none", padding: "0.5rem 1rem", cursor: "pointer" }}>
-              Logout
-            </button>
-          </>
-        ) : (
-          <Link to="/login" style={{ color: "white", textDecoration: "none" }}>
-            Login
-          </Link>
-        )}
-      </div>
+      
     </nav>
   );
 }

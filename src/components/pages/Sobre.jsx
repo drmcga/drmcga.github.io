@@ -1,9 +1,12 @@
 import React from "react";
+import { GLSLSample } from "../glsl/GLSLSample";
 
 function Sobre() {
   return (
     <div style={{ padding: "2rem", lineHeight: "1.6" }}>
       <h1>Sobre o Projeto</h1>
+          <GLSLSample />
+
       <p>
         Este projeto foi desenvolvido como parte de um trabalho acadêmico com o objetivo de demonstrar a aplicação de tecnologias modernas no desenvolvimento de aplicações web interativas. 
         Ele combina funcionalidades de manipulação de imagens, autenticação de usuários e gerenciamento de dados em tempo real utilizando o Firebase.

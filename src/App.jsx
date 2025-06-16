@@ -25,8 +25,18 @@ function App() {
         <Route path="/comousar" element={<ComoUsar />} />
 
       </Routes>
+      
+      <div className="footer-spacer"></div>
+      <footer style={{ textAlign: "center", 
+                        padding: "1rem", 
+                        color: "#059" }}>
+        <p>© 2025 Image Comparison Tool. All rights reserved.</p>
+      </footer>
+     
     </Router>
+
     </main>
+
     
   );
 }
